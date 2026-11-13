@@ -1,2 +1,17 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Normalize line endings so Windows and other machines produce identical diffs.
+* text=auto eol=lf
+
+# Shell scripts stay LF; Windows batch files need CRLF.
+*.sh text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets: never diff, convert or merge them as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
