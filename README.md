@@ -50,3 +50,7 @@ bun run build      # dist/client (assets) + dist/talent_agency/index.js (Worker)
   `POST /api/subscribe`. They validate (422 with field errors, 400 for bad JSON)
   and return a reference; connect them to email, a CRM or a D1 table to keep
   what is sent. Unknown `/api/*` routes return a JSON 404.
+- `api/` exposes the same routes as Vercel Edge Functions (through
+  `hono/vercel`), sharing `src/api/routes.ts` with the Worker, so the forms
+  also work when the static build is hosted on Vercel. `vercel.json` builds
+  `dist-static` with `npm run build:html`.

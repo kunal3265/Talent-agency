@@ -15,7 +15,10 @@ const PHOTO_KEYS = [
   'the-long-field', 'tia-problems', 'moonrise-avenue', 'northern-waters', 'skylark',
   'glasswing-opens', 'welcome-amara-osei', 'micro-drama-casting', 'self-tape-guide', 'seoul-office',
 ]
-const ASSET_BASE = import.meta.env.BASE_URL
+// Images resolve against the page itself, so the same module works when
+// served from a host, from a sub-path or opened straight from disk. Plain Node
+// (the API functions) never renders images and falls back to the site root.
+const ASSET_BASE = typeof document === 'undefined' ? '/' : new URL('.', document.baseURI).href
 
 export const PHOTOS: Partial<Record<string, string>> = Object.fromEntries(PHOTO_KEYS.map((k) => [k, `${ASSET_BASE}images/${k}.webp`]))
 
