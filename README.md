@@ -1,17 +1,44 @@
 # Bravura Talent: talent agency site
 
-A dark, cinematic site for a talent agency: a full-bleed logotype hero with a
-glass-winged dragonfly render, a running timecode and camera HUD, then a
-filterable roster, artist profiles with reel and credits, a work list, journal,
-a three-step representation form, booking enquiries and a saved shortlist.
+A dark, cinematic site for a talent agency, built as a template you can rebrand
+and ship: a full-bleed logotype hero over a glass-winged dragonfly render with a
+running timecode and camera HUD, a filterable roster that remembers your view,
+artist profiles with reel and credits, a work list, a journal, a three-step
+representation form, booking enquiries and a saved shortlist.
+
+**[Live demo](https://bravura-agency.vercel.app/)**
+
+## What this is
+
+A complete agency front end — every screen built, real interaction states and a
+design system you can inspect page by page — with no database or CMS behind it:
+
+- **Static first.** `npm run build:html` compiles the whole site into one
+  double-clickable `dist-static/index.html` with the JS and CSS inlined and the
+  images in a folder beside it. That build switches to hash routing, so every
+  route works when opened straight from disk, not just from a server.
+- **Forms validated twice.** The same rules in `src/shared/validation.ts` run in
+  the browser and on the server: 422 with per-field errors, 400 for malformed
+  JSON, and a booking or submission reference back for valid input.
+- **Two interchangeable APIs.** One Hono app in `src/api/routes.ts` is mounted
+  both as a Cloudflare Worker and as five Vercel Edge Functions, so the forms
+  work on whichever host you deploy to.
+- **Nothing is stored.** Submissions are validated and acknowledged, then
+  dropped — no database, no email, no CRM. The routes are the place to plug one
+  in.
+- **Placeholder media.** Every person, credit, production and photograph is
+  fictional; the images are generated stand-ins you can swap out.
 
 ## Run it
 
 ```sh
-bun install
+bun install        # or: npm install
 bun run dev        # http://localhost:5304 (Vite + the Worker in workerd)
 bun run build      # dist/client (assets) + dist/talent_agency/index.js (Worker)
 ```
+
+On npm, substitute `npm run …` and use `npm run build:html` for the single-file
+build, which does not start a server.
 
 ## Screens
 
@@ -54,3 +81,39 @@ bun run build      # dist/client (assets) + dist/talent_agency/index.js (Worker)
   `hono/vercel`), sharing `src/api/routes.ts` with the Worker, so the forms
   also work when the static build is hosted on Vercel. `vercel.json` builds
   `dist-static` with `npm run build:html`.
+
+## Stack
+
+- React + TypeScript on Vite, with hash routing in the static build.
+- Tailwind for the design-system classes alongside the tokens in `src/styles.css`.
+- Hono for the API, mounted as a Cloudflare Worker and as Vercel Edge Functions.
+
+<details><summary>Dependencies</summary>
+
+```
+@cloudflare/vite-plugin
+@cloudflare/workers-types
+@tailwindcss/vite
+@types/react
+@types/react-dom
+@vitejs/plugin-react
+hono
+lucide-react
+motion
+react
+react-dom
+react-router
+tailwindcss
+typescript
+vite
+wrangler
+```
+
+</details>
+
+## Deploy
+
+| Target | Build | Serves |
+| --- | --- | --- |
+| Vercel | `npm run build:html` (from `vercel.json`) | `dist-static` plus the functions in `api/` |
+| Cloudflare | `npm run build` | `dist/client` assets plus the Worker, per `deploy.json` |
